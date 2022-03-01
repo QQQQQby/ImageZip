@@ -27,6 +27,14 @@ MainWindow::MainWindow(QWidget *parent)
     ui->toolBar->addAction(imageOpenAction);
     ui->toolBar->addSeparator();
 
+    // Canvas
+    canvas = new CanvasWidget(this);
+
+    scrollArea = new QScrollArea;
+    scrollArea->setWidget(canvas);
+    scrollArea->setWidgetResizable(true);
+    setCentralWidget(scrollArea);
+
 }
 
 MainWindow::~MainWindow()
@@ -36,4 +44,5 @@ MainWindow::~MainWindow()
 
 void MainWindow::openImage(){
     qDebug() << "123";
+    canvas->setGeometry(0, 0, canvas->width()+200, canvas->height()-200);
 }

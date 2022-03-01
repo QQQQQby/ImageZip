@@ -2,6 +2,9 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QScrollArea>
+
+#include "canvaswidget.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -17,6 +20,8 @@ public:
 
 private:
     Ui::MainWindow *ui;
+    QScrollArea *scrollArea;
+    CanvasWidget *canvas;
 
 private slots:
     void openImage();

@@ -17,9 +17,11 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
     main.cpp \
+    ui/canvaswidget.cpp \
     ui/mainwindow.cpp
 
 HEADERS += \
+    ui/canvaswidget.h \
     ui/mainwindow.h
 
 FORMS += \
