@@ -2,6 +2,7 @@
 #define CANVASWIDGET_H
 
 #include <QWidget>
+#include <QImage>
 
 class CanvasWidget : public QWidget
 {
@@ -9,7 +10,16 @@ class CanvasWidget : public QWidget
 
 public:
     explicit CanvasWidget(QWidget *parent = nullptr);
-    void paintEvent(QPaintEvent* event);
+
+    void readImage(QString filepath);
+    void zoomIn();
+    void zoomOut();
+
+private:
+    QImage *image;
+    double scale;
+    void paintEvent(QPaintEvent* event) override;
+    void wheelEvent(QWheelEvent *event) override;
 
 signals:
 

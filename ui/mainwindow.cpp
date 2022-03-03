@@ -1,7 +1,8 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-#include <QDebug>
+#include<QDebug>
+#include<QFileDialog>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -10,7 +11,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
 
     // Actions
-    QAction *imageOpenAction = new QAction(QIcon(":/open"), "Open Image", this);
+    imageOpenAction = new QAction(QIcon(":/open"), "Open Image", this);
     imageOpenAction->setShortcut(QKeySequence::Open);
     imageOpenAction->setToolTip("Open a image file.");
     connect(imageOpenAction, SIGNAL(triggered()), this, SLOT(openImage()));
@@ -29,12 +30,12 @@ MainWindow::MainWindow(QWidget *parent)
 
     // Canvas
     canvas = new CanvasWidget(this);
-
     scrollArea = new QScrollArea;
     scrollArea->setWidget(canvas);
     scrollArea->setWidgetResizable(true);
     setCentralWidget(scrollArea);
 
+    state = INITIAL_STATE;
 }
 
 MainWindow::~MainWindow()
@@ -43,6 +44,16 @@ MainWindow::~MainWindow()
 }
 
 void MainWindow::openImage(){
-    qDebug() << "123";
-    canvas->setGeometry(0, 0, canvas->width()+200, canvas->height()-200);
+    if(state == INITIAL_STATE){
+
+    }
+    QString filepath = QFileDialog::getOpenFileName(this, qAppName() + " - Choose image.", ".", "image(*.jpg *.png)");
+    if(filepath == "")
+        return;
+    qDebug() << filepath;
+    canvas->readImage(filepath);
+
+    state = IMAGE_LOADED_STATE;
+//    canvas->setMinimumSize(scrollArea->width()-2, scrollArea->height()-2);
+
 }

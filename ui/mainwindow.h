@@ -6,6 +6,10 @@
 
 #include "canvaswidget.h"
 
+#define INITIAL_STATE 0
+#define IMAGE_LOADED_STATE 1
+#define OPERATE_STATE 2
+
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
@@ -20,8 +24,10 @@ public:
 
 private:
     Ui::MainWindow *ui;
+    QAction *imageOpenAction;
     QScrollArea *scrollArea;
     CanvasWidget *canvas;
+    int state;
 
 private slots:
     void openImage();
