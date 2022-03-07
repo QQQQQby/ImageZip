@@ -25,9 +25,11 @@ public:
 private:
     Ui::MainWindow *ui;
     QAction *imageOpenAction;
+    QAction *seamCarvingAction;
     QScrollArea *scrollArea;
     CanvasWidget *canvas;
     int state;
+
 
 private slots:
     void openImage();

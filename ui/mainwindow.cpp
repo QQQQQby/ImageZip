@@ -16,6 +16,10 @@ MainWindow::MainWindow(QWidget *parent)
     imageOpenAction->setToolTip("Open a image file.");
     connect(imageOpenAction, SIGNAL(triggered()), this, SLOT(openImage()));
 
+    seamCarvingAction = new QAction(QIcon(":/seam"), "Seam Carving", this);
+    imageOpenAction->setToolTip("Run algorithm Seam Carving.");
+//    connect(seamCarvingAction, SIGNAL(triggered()), this, SLOT(seamCarving()));
+
     // Menus
     QMenu *fileMenu = new QMenu("&File", this);
     fileMenu->addAction(imageOpenAction);
@@ -25,8 +29,8 @@ MainWindow::MainWindow(QWidget *parent)
     menuBar->addMenu(fileMenu);
 
     // Tool Bar
-    ui->toolBar->addAction(imageOpenAction);
-    ui->toolBar->addSeparator();
+    ui->toolBar->addAction(seamCarvingAction);
+//    ui->toolBar->addSeparator();
 
     // Canvas
     canvas = new CanvasWidget(this);
@@ -36,6 +40,7 @@ MainWindow::MainWindow(QWidget *parent)
     setCentralWidget(scrollArea);
 
     state = INITIAL_STATE;
+    seamCarvingAction->setEnabled(false);
 }
 
 MainWindow::~MainWindow()
@@ -50,7 +55,6 @@ void MainWindow::openImage(){
     QString filepath = QFileDialog::getOpenFileName(this, qAppName() + " - Choose image.", ".", "image(*.jpg *.png)");
     if(filepath == "")
         return;
-    qDebug() << filepath;
     canvas->readImage(filepath);
 
     state = IMAGE_LOADED_STATE;

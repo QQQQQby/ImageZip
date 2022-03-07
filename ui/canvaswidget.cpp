@@ -12,7 +12,7 @@
 CanvasWidget::CanvasWidget(QWidget *parent) : QWidget(parent)
 {
     image = nullptr;
-    scale = 0;
+    scale = minScale = maxScale = 1;
 }
 
 void CanvasWidget::readImage(QString filepath){
@@ -20,21 +20,39 @@ void CanvasWidget::readImage(QString filepath){
     image = new QImage();
     QImageReader reader(filepath);
     reader.read(image);
-    setMinimumSize(image->width(), image->height());
-    scale = 1;
+
+    updateScaleRange();
+    fitImage();
+}
+
+void CanvasWidget::readImage(QImage another){
+    delete image;
+    image = new QImage(another);
+
+    updateScaleRange();
+    fitImage(scale);
+}
+
+void CanvasWidget::fitImage(int scale){
+    this->scale = fmin(fmax(scale, minScale), maxScale);
+    setMinimumSize(this->scale*image->width(), this->scale*image->height());
     repaint();
 }
 
 void CanvasWidget::zoomIn(){
-    scale = fmin(scale * 1.2, 5);
+    scale = fmin(scale * 1.2, maxScale);
     setMinimumSize(scale*image->width(), scale*image->height());
     repaint();
 }
 
 void CanvasWidget::zoomOut(){
-    scale = fmax(scale * 0.8, 1e-2);
+    scale = fmax(scale * 0.8, minScale);
     setMinimumSize(scale*image->width(), scale*image->height());
     repaint();
+}
+
+double CanvasWidget::getScale() {
+	return scale;
 }
 
 void CanvasWidget::paintEvent(QPaintEvent* event){
@@ -57,4 +75,13 @@ void CanvasWidget::wheelEvent(QWheelEvent *event){
             zoomOut();
         event->accept();
     }
+}
+
+void CanvasWidget::updateScaleRange(){
+    if(image == nullptr){
+        minScale = maxScale = 1;
+        return;
+    }
+    minScale = fmax(MIN_WIDTH/(double)image->width(), MIN_HEIGHT/(double)image->height());
+    maxScale = fmin(MAX_WIDTH/(double)image->width(), MAX_HEIGHT/(double)image->height());
 }

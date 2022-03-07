@@ -1,5 +1,6 @@
 <RCC>
     <qresource prefix="/">
         <file alias="open">resources/icons/open.png</file>
+        <file alias="seam">resources/icons/seam.png</file>
     </qresource>
 </RCC>
