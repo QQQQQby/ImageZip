@@ -39,6 +39,14 @@ void CanvasWidget::fitImage(int scale){
     repaint();
 }
 
+int CanvasWidget::getImageWidth(){
+    return image == nullptr ? -1 : image->width();
+}
+
+int CanvasWidget::getImageHeight(){
+    return image == nullptr ? -1 : image->height();
+}
+
 void CanvasWidget::zoomIn(){
     scale = fmin(scale * 1.2, maxScale);
     setMinimumSize(scale*image->width(), scale*image->height());
@@ -53,6 +61,12 @@ void CanvasWidget::zoomOut(){
 
 double CanvasWidget::getScale() {
 	return scale;
+}
+
+void CanvasWidget::clearImage(){
+    delete image;
+    image = nullptr;
+    scale = minScale = maxScale = 1;
 }
 
 void CanvasWidget::paintEvent(QPaintEvent* event){

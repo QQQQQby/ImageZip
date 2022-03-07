@@ -3,6 +3,8 @@
 
 #include<QDebug>
 #include<QFileDialog>
+#include<QVBoxLayout>
+#include<QSlider>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -17,8 +19,9 @@ MainWindow::MainWindow(QWidget *parent)
     connect(imageOpenAction, SIGNAL(triggered()), this, SLOT(openImage()));
 
     seamCarvingAction = new QAction(QIcon(":/seam"), "Seam Carving", this);
-    imageOpenAction->setToolTip("Run algorithm Seam Carving.");
-//    connect(seamCarvingAction, SIGNAL(triggered()), this, SLOT(seamCarving()));
+    imageOpenAction->setToolTip("Run horizontal Seam Carving.");
+    seamCarvingAction->setCheckable(true);
+    connect(seamCarvingAction, SIGNAL(triggered(bool)), this, SLOT(showHSeamCarvingOperation(bool)));
 
     // Menus
     QMenu *fileMenu = new QMenu("&File", this);
@@ -39,7 +42,7 @@ MainWindow::MainWindow(QWidget *parent)
     scrollArea->setWidgetResizable(true);
     setCentralWidget(scrollArea);
 
-    state = INITIAL_STATE;
+    isLoaded = false;
     seamCarvingAction->setEnabled(false);
 }
 
@@ -48,8 +51,27 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+//void MainWindow::switchState(int state){
+//    switch (state) {
+//    case INITIAL_STATE:
+//        imageOpenAction->setEnabled(true);
+//        seamCarvingAction->setEnabled(false);
+//        this->state = INITIAL_STATE;
+//        break;
+//    case IMAGE_LOADED_STATE:
+//        seamCarvingAction->setEnabled(true);
+
+//        this->state = IMAGE_LOADED_STATE;
+//        break;
+//    case OPERATE_STATE:
+//        seamCarvingAction->setEnabled(true);
+//        this->state = OPERATE_STATE;
+//        break;
+//    }
+//}
+
 void MainWindow::openImage(){
-    if(state == INITIAL_STATE){
+    if(isLoaded){
 
     }
     QString filepath = QFileDialog::getOpenFileName(this, qAppName() + " - Choose image.", ".", "image(*.jpg *.png)");
@@ -57,7 +79,34 @@ void MainWindow::openImage(){
         return;
     canvas->readImage(filepath);
 
-    state = IMAGE_LOADED_STATE;
 //    canvas->setMinimumSize(scrollArea->width()-2, scrollArea->height()-2);
+    seamCarvingAction->setEnabled(true);
+    isLoaded = true;
+}
 
+void MainWindow::showHSeamCarvingOperation(bool checked){
+    qDebug()<<"check seam carving:"<<checked;
+    if(checked){
+        QWidget *widget = new QWidget;
+        QVBoxLayout *layout = new QVBoxLayout;
+
+        QSlider *slider = new QSlider(widget);
+        slider->setOrientation(Qt::Horizontal);
+        slider->setMinimum(1);
+        slider->setMaximum(canvas->getImageWidth());
+        slider->setSingleStep(1);
+        connect(slider, SIGNAL(valueChanged(int)), this, SLOT(setHSeamCarvingValue(int)));
+
+        layout->addWidget(slider);
+        layout->addStretch();
+        widget->setLayout(layout);
+        ui->operationDockWidget->setWidget(widget);
+    }else{
+        delete ui->operationDockWidget->widget();
+        ui->operationDockWidget->setWidget(new QWidget);
+    }
+}
+
+void MainWindow::setHSeamCarvingValue(int value){
+    qDebug() << value;
 }

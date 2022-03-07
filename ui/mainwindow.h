@@ -6,10 +6,6 @@
 
 #include "canvaswidget.h"
 
-#define INITIAL_STATE 0
-#define IMAGE_LOADED_STATE 1
-#define OPERATE_STATE 2
-
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
@@ -28,10 +24,13 @@ private:
     QAction *seamCarvingAction;
     QScrollArea *scrollArea;
     CanvasWidget *canvas;
-    int state;
+    bool isLoaded;
+//    void switchState(int state);
 
 
 private slots:
     void openImage();
+    void showHSeamCarvingOperation(bool checked);
+    void setHSeamCarvingValue(int value);
 };
 #endif // MAINWINDOW_H

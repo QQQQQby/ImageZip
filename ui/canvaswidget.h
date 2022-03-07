@@ -20,9 +20,13 @@ public:
     void readImage(QImage image);
     void fitImage(int scale = 1);
 
+    int getImageWidth();
+    int getImageHeight();
+
     void zoomIn();
     void zoomOut();
     double getScale();
+    void clearImage();
 
 private:
     QImage *image;
