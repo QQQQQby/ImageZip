@@ -14,14 +14,12 @@ class CanvasWidget : public QWidget
     Q_OBJECT
 
 public:
+    QImage *image;
     explicit CanvasWidget(QWidget *parent = nullptr);
 
     void readImage(QString filepath);
     void readImage(QImage image);
     void fitImage(int scale = 1);
-
-    int getImageWidth();
-    int getImageHeight();
 
     void zoomIn();
     void zoomOut();
@@ -29,7 +27,6 @@ public:
     void clearImage();
 
 private:
-    QImage *image;
     double scale, minScale, maxScale;
     void paintEvent(QPaintEvent* event) override;
     void wheelEvent(QWheelEvent *event) override;

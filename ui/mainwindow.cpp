@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "ui/seamcarvingoperationwidget.h"
 
 #include<QDebug>
 #include<QFileDialog>
@@ -87,26 +88,10 @@ void MainWindow::openImage(){
 void MainWindow::showHSeamCarvingOperation(bool checked){
     qDebug()<<"check seam carving:"<<checked;
     if(checked){
-        QWidget *widget = new QWidget;
-        QVBoxLayout *layout = new QVBoxLayout;
-
-        QSlider *slider = new QSlider(widget);
-        slider->setOrientation(Qt::Horizontal);
-        slider->setMinimum(1);
-        slider->setMaximum(canvas->getImageWidth());
-        slider->setSingleStep(1);
-        connect(slider, SIGNAL(valueChanged(int)), this, SLOT(setHSeamCarvingValue(int)));
-
-        layout->addWidget(slider);
-        layout->addStretch();
-        widget->setLayout(layout);
+        QWidget *widget = new SeamCarvingOperationWidget(nullptr, canvas, false);
         ui->operationDockWidget->setWidget(widget);
     }else{
         delete ui->operationDockWidget->widget();
         ui->operationDockWidget->setWidget(new QWidget);
     }
-}
-
-void MainWindow::setHSeamCarvingValue(int value){
-    qDebug() << value;
 }

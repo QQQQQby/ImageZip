@@ -17,12 +17,14 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
     main.cpp \
+    ui/mainwindow.cpp \
     ui/canvaswidget.cpp \
-    ui/mainwindow.cpp
+    ui/seamcarvingoperationwidget.cpp
 
 HEADERS += \
+    ui/mainwindow.h \
     ui/canvaswidget.h \
-    ui/mainwindow.h
+    ui/seamcarvingoperationwidget.h
 
 FORMS += \
     ui/mainwindow.ui

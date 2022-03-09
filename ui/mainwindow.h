@@ -31,6 +31,5 @@ private:
 private slots:
     void openImage();
     void showHSeamCarvingOperation(bool checked);
-    void setHSeamCarvingValue(int value);
 };
 #endif // MAINWINDOW_H
