@@ -19,12 +19,14 @@ SOURCES += \
     main.cpp \
     ui/mainwindow.cpp \
     ui/canvaswidget.cpp \
-    ui/seamcarvingoperationwidget.cpp
+    ui/seamcarvingoperationwidget.cpp \
+    utils/seamcarving.cpp
 
 HEADERS += \
     ui/mainwindow.h \
     ui/canvaswidget.h \
-    ui/seamcarvingoperationwidget.h
+    ui/seamcarvingoperationwidget.h \
+    utils/seamcarving.h
 
 FORMS += \
     ui/mainwindow.ui
