@@ -21,7 +21,7 @@ public:
 private:
     Ui::MainWindow *ui;
     QAction *imageOpenAction;
-    QAction *seamCarvingAction;
+    QAction *horizontalSeamCarvingAction, *verticalSeamCarvingAction;
     QScrollArea *scrollArea;
     CanvasWidget *canvas;
     bool isLoaded;
@@ -30,6 +30,7 @@ private:
 
 private slots:
     void openImage();
-    void showHSeamCarvingOperation(bool checked);
+    void showHorizontalSeamCarvingOperation(bool checked);
+    void showVerticalSeamCarvingOperation(bool checked);
 };
 #endif // MAINWINDOW_H

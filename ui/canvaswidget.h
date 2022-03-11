@@ -4,8 +4,8 @@
 #include <QWidget>
 #include <QImage>
 
-#define MIN_WIDTH 100
-#define MIN_HEIGHT 100
+#define MIN_WIDTH 1
+#define MIN_HEIGHT 1
 #define MAX_WIDTH 8000
 #define MAX_HEIGHT 8000
 
@@ -19,7 +19,7 @@ public:
 
     void readImage(QString filepath);
     void readImage(QImage image);
-    void fitImage(int scale = 1);
+    void fitImage(double scale = 1);
 
     void zoomIn();
     void zoomOut();

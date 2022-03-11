@@ -2,10 +2,8 @@
 #include "ui_mainwindow.h"
 #include "ui/seamcarvingoperationwidget.h"
 
-#include<QDebug>
-#include<QFileDialog>
-#include<QVBoxLayout>
-#include<QSlider>
+#include <QDebug>
+#include <QFileDialog>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -19,10 +17,15 @@ MainWindow::MainWindow(QWidget *parent)
     imageOpenAction->setToolTip("Open a image file.");
     connect(imageOpenAction, SIGNAL(triggered()), this, SLOT(openImage()));
 
-    seamCarvingAction = new QAction(QIcon(":/seam"), "Seam Carving", this);
-    imageOpenAction->setToolTip("Run horizontal Seam Carving.");
-    seamCarvingAction->setCheckable(true);
-    connect(seamCarvingAction, SIGNAL(triggered(bool)), this, SLOT(showHSeamCarvingOperation(bool)));
+    horizontalSeamCarvingAction = new QAction(QIcon(":/horizontal-seam"), "Horizontal Seam Carving", this);
+    horizontalSeamCarvingAction->setToolTip("Run horizontal Seam Carving.");
+    horizontalSeamCarvingAction->setCheckable(true);
+    connect(horizontalSeamCarvingAction, SIGNAL(triggered(bool)), this, SLOT(showHorizontalSeamCarvingOperation(bool)));
+
+    verticalSeamCarvingAction = new QAction(QIcon(":/vertical-seam"), "Vertical Seam Carving", this);
+    verticalSeamCarvingAction->setToolTip("Run vertical Seam Carving.");
+    verticalSeamCarvingAction->setCheckable(true);
+    connect(verticalSeamCarvingAction, SIGNAL(triggered(bool)), this, SLOT(showVerticalSeamCarvingOperation(bool)));
 
     // Menus
     QMenu *fileMenu = new QMenu("&File", this);
@@ -33,8 +36,8 @@ MainWindow::MainWindow(QWidget *parent)
     menuBar->addMenu(fileMenu);
 
     // Tool Bar
-    ui->toolBar->addAction(seamCarvingAction);
-//    ui->toolBar->addSeparator();
+    ui->toolBar->addAction(horizontalSeamCarvingAction);
+    ui->toolBar->addAction(verticalSeamCarvingAction);
 
     // Canvas
     canvas = new CanvasWidget(this);
@@ -44,7 +47,8 @@ MainWindow::MainWindow(QWidget *parent)
     setCentralWidget(scrollArea);
 
     isLoaded = false;
-    seamCarvingAction->setEnabled(false);
+    horizontalSeamCarvingAction->setEnabled(false);
+    verticalSeamCarvingAction->setEnabled(false);
 }
 
 MainWindow::~MainWindow()
@@ -73,21 +77,35 @@ MainWindow::~MainWindow()
 
 void MainWindow::openImage(){
     if(isLoaded){
-
+        horizontalSeamCarvingAction->setChecked(false);
+        verticalSeamCarvingAction->setChecked(false);
+        delete ui->operationDockWidget->widget();
+        ui->operationDockWidget->setWidget(new QWidget);
     }
     QString filepath = QFileDialog::getOpenFileName(this, qAppName() + " - Choose image.", ".", "image(*.jpg *.png)");
     if(filepath == "")
         return;
     canvas->readImage(filepath);
-
-//    canvas->setMinimumSize(scrollArea->width()-2, scrollArea->height()-2);
-    seamCarvingAction->setEnabled(true);
+    horizontalSeamCarvingAction->setEnabled(true);
+    verticalSeamCarvingAction->setEnabled(true);
     isLoaded = true;
 }
 
-void MainWindow::showHSeamCarvingOperation(bool checked){
-    qDebug()<<"check seam carving:"<<checked;
+void MainWindow::showHorizontalSeamCarvingOperation(bool checked){
     if(checked){
+        verticalSeamCarvingAction->setChecked(false);
+        QWidget *widget = new SeamCarvingOperationWidget(nullptr, canvas, true);
+        ui->operationDockWidget->setWidget(widget);
+    }else{
+        delete ui->operationDockWidget->widget();
+        ui->operationDockWidget->setWidget(new QWidget);
+    }
+}
+
+
+void MainWindow::showVerticalSeamCarvingOperation(bool checked){
+    if(checked){
+        horizontalSeamCarvingAction->setChecked(false);
         QWidget *widget = new SeamCarvingOperationWidget(nullptr, canvas, false);
         ui->operationDockWidget->setWidget(widget);
     }else{

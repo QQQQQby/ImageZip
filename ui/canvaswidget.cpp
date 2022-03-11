@@ -1,4 +1,3 @@
-#include <cmath>
 #include <QDebug>
 #include <QPainter>
 #include <QPen>
@@ -33,7 +32,7 @@ void CanvasWidget::readImage(QImage another){
     fitImage(scale);
 }
 
-void CanvasWidget::fitImage(int scale){
+void CanvasWidget::fitImage(double scale){
     this->scale = fmin(fmax(scale, minScale), maxScale);
     setMinimumSize(this->scale*image->width(), this->scale*image->height());
     repaint();
@@ -61,7 +60,7 @@ void CanvasWidget::clearImage(){
     scale = minScale = maxScale = 1;
 }
 
-void CanvasWidget::paintEvent(QPaintEvent* event){
+void CanvasWidget::paintEvent(QPaintEvent*){
     QPainter painter(this);
     QPen pen;
     painter.setPen(pen);

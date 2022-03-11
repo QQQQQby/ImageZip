@@ -11,8 +11,8 @@ public:
     static int *findHorizontalSeam(QImage *);
     static int *findVerticalSeam(QImage *);
 
-    static QImage *removeHorizontalSeam(int *);
-    static QImage *removeVerticalSeam(int *);
+    static QImage removeHorizontalSeam(QImage *, int *);
+    static QImage removeVerticalSeam(QImage *, int *);
 
     static double energy(QImage *, int, int);
 

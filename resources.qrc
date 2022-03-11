@@ -1,6 +1,7 @@
 <RCC>
     <qresource prefix="/">
         <file alias="open">resources/icons/open.png</file>
-        <file alias="seam">resources/icons/seam.png</file>
+        <file alias="horizontal-seam">resources/icons/horizontal-seam.png</file>
+        <file alias="vertical-seam">resources/icons/vertical-seam.png</file>
     </qresource>
 </RCC>

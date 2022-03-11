@@ -14,7 +14,7 @@ public:
 private:
     QSlider *slider;
     CanvasWidget *canvas;
-    bool isVertical;
+    bool isHorizontal;
     int lastValue;
     void paintEvent(QPaintEvent *) override;
 
