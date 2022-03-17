@@ -113,13 +113,13 @@ void MainWindow::closeImage(){
 }
 
 void MainWindow::showHorizontalSeamCarvingOperation(bool checked){
+    delete ui->operationDockWidget->widget();
     if(checked){
         verticalSeamCarvingAction->setChecked(false);
         QWidget *widget = new SeamCarvingOperationWidget(nullptr, canvas, true);
         ui->operationDockWidget->setWidget(widget);
         state = OPERATING_STATE;
     }else{
-        delete ui->operationDockWidget->widget();
         ui->operationDockWidget->setWidget(new QWidget);
         state = IMAGE_LOADED_STATE;
     }
@@ -127,13 +127,13 @@ void MainWindow::showHorizontalSeamCarvingOperation(bool checked){
 
 
 void MainWindow::showVerticalSeamCarvingOperation(bool checked){
+    delete ui->operationDockWidget->widget();
     if(checked){
         horizontalSeamCarvingAction->setChecked(false);
         QWidget *widget = new SeamCarvingOperationWidget(nullptr, canvas, false);
         ui->operationDockWidget->setWidget(widget);
         state = OPERATING_STATE;
     }else{
-        delete ui->operationDockWidget->widget();
         ui->operationDockWidget->setWidget(new QWidget);
         state = IMAGE_LOADED_STATE;
     }

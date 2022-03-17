@@ -3,7 +3,9 @@
 
 #include <QWidget>
 #include <QSlider>
+#include <vector>
 #include "ui/canvaswidget.h"
+using namespace std;
 
 class SeamCarvingOperationWidget : public QWidget
 {
@@ -15,7 +17,8 @@ private:
     QSlider *slider;
     CanvasWidget *canvas;
     bool isHorizontal;
-    int lastValue;
+    int lastValue, maxValue, currIndex;
+    vector<QImage> undoList;
     void paintEvent(QPaintEvent *) override;
 
 private slots:

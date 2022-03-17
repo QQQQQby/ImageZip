@@ -46,6 +46,9 @@ int *SeamCarving::findHorizontalSeam(QImage *image) {
             ans[x] = minY;
         }
     }
+    for (int i = 0; i < image->width(); ++i)
+        delete[] dp[i];
+    delete[] dp;
     return ans;
 }
 
@@ -93,6 +96,9 @@ int *SeamCarving::findVerticalSeam(QImage *image) {
             ans[y] = minX;
         }
     }
+    for (int i = 0; i < image->width(); ++i)
+        delete[] dp[i];
+    delete[] dp;
     return ans;
 }
 

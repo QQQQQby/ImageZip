@@ -11,13 +11,12 @@
 
 SeamCarvingOperationWidget::SeamCarvingOperationWidget(QWidget *parent, CanvasWidget *canvas, bool isHorizontal) : QWidget(parent)
 {
-    int max = isHorizontal ? canvas->image->height() : canvas->image->width();
+    maxValue = isHorizontal ? canvas->image->height() : canvas->image->width();
     slider = new QSlider(this);
     slider->setOrientation(Qt::Horizontal);
     slider->setMinimum(1);
-//    slider->setSingleStep(1);
-    slider->setMaximum(max);
-    slider->setValue(max);
+    slider->setMaximum(maxValue);
+    slider->setValue(maxValue);
     connect(slider, SIGNAL(valueChanged(int)), this, SLOT(setSeamCarvingValue(int)));
 
     QVBoxLayout *layout = new QVBoxLayout;
@@ -27,7 +26,9 @@ SeamCarvingOperationWidget::SeamCarvingOperationWidget(QWidget *parent, CanvasWi
 
     this->canvas = canvas;
     this->isHorizontal = isHorizontal;
-    lastValue = max;
+    lastValue = maxValue;
+    undoList.push_back(canvas->image->copy());
+    currIndex = 0;
 }
 
 void SeamCarvingOperationWidget::paintEvent(QPaintEvent *){
@@ -38,26 +39,28 @@ void SeamCarvingOperationWidget::paintEvent(QPaintEvent *){
 }
 
 void SeamCarvingOperationWidget::setSeamCarvingValue(int value){
-    qDebug() << lastValue << "->" << value;
-    QSize originalSize = canvas->image->size();
-    if(lastValue <= value)
+    if(lastValue == value)
         return;
 
-    QImage image = canvas->image->copy();
-    if(isHorizontal){
-        for (int i = lastValue; i > value; --i){
-            int *seam = SeamCarving::findHorizontalSeam(&image);
-            image = SeamCarving::removeHorizontalSeam(&image, seam);
+    qDebug() << lastValue << "->" << value;
+    int nextIndex = maxValue - value;
+
+    if(nextIndex < (int)undoList.size()){
+        // Undo
+        canvas->readImage(undoList[nextIndex]);
+        return;
+    }
+
+    QImage image = undoList[undoList.size() - 1];
+    for (int i = (int)undoList.size() - 1; i < nextIndex; ++i){
+        if(isHorizontal){
+            image = SeamCarving::removeHorizontalSeam(&image, SeamCarving::findHorizontalSeam(&image));
+        }else{
+            image = SeamCarving::removeVerticalSeam(&image, SeamCarving::findVerticalSeam(&image));
         }
-    }else{
-        for (int i = lastValue; i > value; --i){
-            int *seam = SeamCarving::findVerticalSeam(&image);
-            image = SeamCarving::removeVerticalSeam(&image, seam);
-        }
+        undoList.push_back(image);
     }
     canvas->readImage(image);
-
     lastValue = value;
-
-    qDebug() << originalSize << "->" << canvas->image->size();
+    currIndex = nextIndex;
 }
