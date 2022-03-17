@@ -32,6 +32,10 @@ void CanvasWidget::readImage(QImage another){
     fitImage(scale);
 }
 
+void CanvasWidget::saveImage(QString filepath){
+    image->save(filepath);
+}
+
 void CanvasWidget::fitImage(double scale){
     this->scale = fmin(fmax(scale, minScale), maxScale);
     setMinimumSize(this->scale*image->width(), this->scale*image->height());
@@ -58,6 +62,8 @@ void CanvasWidget::clearImage(){
     delete image;
     image = nullptr;
     scale = minScale = maxScale = 1;
+    setMinimumSize(0, 0);
+    repaint();
 }
 
 void CanvasWidget::paintEvent(QPaintEvent*){

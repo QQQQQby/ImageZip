@@ -20,11 +20,12 @@ public:
     void readImage(QString filepath);
     void readImage(QImage image);
     void fitImage(double scale = 1);
+    void clearImage();
 
+    void saveImage(QString filepath);
     void zoomIn();
     void zoomOut();
     double getScale();
-    void clearImage();
 
 private:
     double scale, minScale, maxScale;

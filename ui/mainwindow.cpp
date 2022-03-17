@@ -17,6 +17,16 @@ MainWindow::MainWindow(QWidget *parent)
     imageOpenAction->setToolTip("Open a image file.");
     connect(imageOpenAction, SIGNAL(triggered()), this, SLOT(openImage()));
 
+    imageSaveAction = new QAction(QIcon(":/save"), "Save Image", this);
+    imageSaveAction->setShortcut(QKeySequence::Save);
+    imageSaveAction->setToolTip("Save current image.");
+    connect(imageSaveAction, SIGNAL(triggered()), this, SLOT(saveImage()));
+
+    imageCloseAction = new QAction(QIcon(":/close"), "Close Image", this);
+    imageCloseAction->setShortcut(QKeySequence::Close);
+    imageCloseAction->setToolTip("Close current image.");
+    connect(imageCloseAction, SIGNAL(triggered()), this, SLOT(closeImage()));
+
     horizontalSeamCarvingAction = new QAction(QIcon(":/horizontal-seam"), "Horizontal Seam Carving", this);
     horizontalSeamCarvingAction->setToolTip("Run horizontal Seam Carving.");
     horizontalSeamCarvingAction->setCheckable(true);
@@ -30,6 +40,9 @@ MainWindow::MainWindow(QWidget *parent)
     // Menus
     QMenu *fileMenu = new QMenu("&File", this);
     fileMenu->addAction(imageOpenAction);
+    fileMenu->addSeparator();
+    fileMenu->addAction(imageSaveAction);
+    fileMenu->addAction(imageCloseAction);
 
     // Menu Bar
     QMenuBar *menuBar = this->menuBar();
@@ -46,9 +59,11 @@ MainWindow::MainWindow(QWidget *parent)
     scrollArea->setWidgetResizable(true);
     setCentralWidget(scrollArea);
 
-    isLoaded = false;
+    imageSaveAction->setEnabled(false);
+    imageCloseAction->setEnabled(false);
     horizontalSeamCarvingAction->setEnabled(false);
     verticalSeamCarvingAction->setEnabled(false);
+    state = INITIAL_STATE;
 }
 
 MainWindow::~MainWindow()
@@ -56,39 +71,45 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-//void MainWindow::switchState(int state){
-//    switch (state) {
-//    case INITIAL_STATE:
-//        imageOpenAction->setEnabled(true);
-//        seamCarvingAction->setEnabled(false);
-//        this->state = INITIAL_STATE;
-//        break;
-//    case IMAGE_LOADED_STATE:
-//        seamCarvingAction->setEnabled(true);
-
-//        this->state = IMAGE_LOADED_STATE;
-//        break;
-//    case OPERATE_STATE:
-//        seamCarvingAction->setEnabled(true);
-//        this->state = OPERATE_STATE;
-//        break;
-//    }
-//}
-
 void MainWindow::openImage(){
-    if(isLoaded){
+    QString filepath = QFileDialog::getOpenFileName(this, qAppName() + " - Choose image.", ".", "image(*.jpg *.png)");
+    if(filepath == "")
+        return;
+
+    canvas->readImage(filepath);
+
+    if(state == OPERATING_STATE){
         horizontalSeamCarvingAction->setChecked(false);
         verticalSeamCarvingAction->setChecked(false);
         delete ui->operationDockWidget->widget();
         ui->operationDockWidget->setWidget(new QWidget);
     }
-    QString filepath = QFileDialog::getOpenFileName(this, qAppName() + " - Choose image.", ".", "image(*.jpg *.png)");
-    if(filepath == "")
-        return;
-    canvas->readImage(filepath);
+    imageSaveAction->setEnabled(true);
+    imageCloseAction->setEnabled(true);
     horizontalSeamCarvingAction->setEnabled(true);
     verticalSeamCarvingAction->setEnabled(true);
-    isLoaded = true;
+}
+
+void MainWindow::saveImage(){
+    QString filepath = QFileDialog::getSaveFileName(this, qAppName() + " - Save image.", ".", "image(*.png *.jpg)");
+    if(filepath == "")
+        return;
+    canvas->saveImage(filepath);
+}
+
+void MainWindow::closeImage(){
+    if(state == OPERATING_STATE){
+        horizontalSeamCarvingAction->setChecked(false);
+        verticalSeamCarvingAction->setChecked(false);
+        delete ui->operationDockWidget->widget();
+        ui->operationDockWidget->setWidget(new QWidget);
+    }
+    imageSaveAction->setEnabled(false);
+    imageCloseAction->setEnabled(false);
+    horizontalSeamCarvingAction->setEnabled(false);
+    verticalSeamCarvingAction->setEnabled(false);
+    canvas->clearImage();
+    state = INITIAL_STATE;
 }
 
 void MainWindow::showHorizontalSeamCarvingOperation(bool checked){
@@ -96,9 +117,11 @@ void MainWindow::showHorizontalSeamCarvingOperation(bool checked){
         verticalSeamCarvingAction->setChecked(false);
         QWidget *widget = new SeamCarvingOperationWidget(nullptr, canvas, true);
         ui->operationDockWidget->setWidget(widget);
+        state = OPERATING_STATE;
     }else{
         delete ui->operationDockWidget->widget();
         ui->operationDockWidget->setWidget(new QWidget);
+        state = IMAGE_LOADED_STATE;
     }
 }
 
@@ -108,8 +131,10 @@ void MainWindow::showVerticalSeamCarvingOperation(bool checked){
         horizontalSeamCarvingAction->setChecked(false);
         QWidget *widget = new SeamCarvingOperationWidget(nullptr, canvas, false);
         ui->operationDockWidget->setWidget(widget);
+        state = OPERATING_STATE;
     }else{
         delete ui->operationDockWidget->widget();
         ui->operationDockWidget->setWidget(new QWidget);
+        state = IMAGE_LOADED_STATE;
     }
 }
